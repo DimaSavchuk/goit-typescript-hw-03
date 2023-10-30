@@ -22,7 +22,11 @@
 в якому людина приходить додому.
 */
 
-class Key {
+interface ISignature {
+  getSignature(): number;
+}
+
+class Key implements ISignature {
   private signature: number;
   constructor() {
     this.signature = Math.random();
@@ -34,31 +38,32 @@ class Key {
 }
 
 class Person {
-  private key: Key;
-  constructor(key: Key) {
+  private key: ISignature;
+  constructor(key: ISignature) {
     this.key = key;
   }
 
-  getKey(): Key {
+  getKey(): ISignature {
     return this.key;
   }
 }
 
 abstract class House {
   protected door: boolean;
-  protected key: Key;
+  protected key: ISignature;
   protected tenants: Person[] = [];
 
-  constructor(key: Key) {
+  constructor(key: ISignature) {
     this.door = false;
     this.key = key;
   }
 
-  abstract openDoor(key: Key): void;
+  abstract openDoor(key: ISignature): void;
 
   comeIn(person: Person): void {
     if (this.door) {
       this.tenants.push(person);
+      console.log("Door open");
     } else {
       console.log("Door closed");
     }
@@ -66,9 +71,10 @@ abstract class House {
 }
 
 class MyHouse extends House {
-  openDoor(key: Key): void {
+  openDoor(key: ISignature): void {
     if (key.getSignature() === this.key.getSignature()) {
       this.door = true;
+      console.log("Door open");
     } else {
       console.log("Door closed");
     }
